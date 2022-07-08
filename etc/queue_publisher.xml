@@ -1,0 +1,8 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue_publisher.xsd">
+    <!-- topic: Name of topic-->
+    <publisher topic="magesoft.sms">
+        <connection name="db" exchange="magesoftSmsTopology" />
+
+    </publisher>
+
+</config>

@@ -1,0 +1,5 @@
+<config>
+    <extension_attributes for="Magento\Customer\Api\Data\CustomerInterface">
+        <attribute code="mobile" type="float"/>
+    </extension_attributes>
+</config>

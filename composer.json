@@ -1,0 +1,14 @@
+{
+    "name": "magesoft/otp",
+    "description": "Login customer by mobile",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ]
+    },
+    "require": {
+        "ext-redis": "*"
+    }
+}

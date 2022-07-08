@@ -1,0 +1,7 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue_topology.xsd">
+
+    <exchange name="magesoftSmsTopology" type="topic" connection="db" >
+        <binding id="magesoftSmsQueue" topic="magesoft.sms" destinationType="queue" destination="magesoft.sms.otp"/>
+    </exchange>
+
+</config>

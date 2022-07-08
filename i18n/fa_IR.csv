@@ -1,0 +1,4 @@
+Email OR Mobile,ایمیل یا پسورد,module,Magesoft_Otp
+Submit Auth Code,ارسال کد تاییده,module,Magesoft_Otp
+Auth Code,کد تاییده,module,Magesoft_Otp
+send request before,درخواست تکراری در بازه یک بازه,module,Magesoft_Otp

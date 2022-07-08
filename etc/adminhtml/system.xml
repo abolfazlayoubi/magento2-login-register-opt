@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="rds_core_base_settings" translate="label" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
+            <class>separator-top</class>
+            <label>Magesoft Core Settings</label>
+            <tab>general</tab>
+<!--            <resource>Magesoft_otp::rds_core_base_settings</resource>-->
+
+            <group id="redis_storage" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Redis Storage</label>
+                <field id="server" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Server</label>
+                    <comment>Redis server host</comment>
+                </field>
+                <field id="db" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>DB Index</label>
+                    <comment>Redis DB index</comment>
+                </field>
+            </group>
+        </section>
+        <section id="otp_base_settings"
+                 translate="label" sortOrder="0" showInDefault="1"
+                 showInWebsite="0" showInStore="0">
+            <class>separator-top</class>
+            <label>Magesoft Core Settings</label>
+            <tab>general</tab>
+<!--            <resource>magesoft_otp::core_base_settings</resource>-->
+            <group id="auth_setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Code Expire Time</label>
+                <field id="expire_auth" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Expire Time</label>
+                    <comment>Expire Auth Code Time Per Minute</comment>
+                </field>
+            </group>
+
+        </section>
+    </system>
+</config>

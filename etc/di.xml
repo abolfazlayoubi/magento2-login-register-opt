@@ -1,0 +1,53 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Magesoft\Otp\Model\Redis\RedisStorageDataStorage"
+                type="Magesoft\Otp\Model\Redis\RedisStorageDataStorageLink" />
+
+    <preference for="Magesoft\Otp\Api\Data\MessageQueue"
+                type="Magesoft\Otp\Model\Data\MessageQueue" />
+
+    <virtualType name="Magesoft\Otp\Model\Method\DebugLogger" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/otpLog.log</argument>
+        </arguments>
+    </virtualType>
+
+<!--    <virtualType name="Magesoft\Otp\Model\Method\ExceptionLogger" type="Magento\Framework\Logger\Handler\Exception">-->
+<!--        <arguments>-->
+<!--            <argument name="fileName" xsi:type="string">/var/log/otpException.log</argument>-->
+<!--        </arguments>-->
+<!--    </virtualType>-->
+
+<!--    <virtualType name="Magesoft\Otp\Model\Method\ErrorLogger" type="Magento\Framework\Logger\Handler\Debug">-->
+<!--        <arguments>-->
+<!--            <argument name="fileName" xsi:type="string">/var/log/otpError.log</argument>-->
+<!--        </arguments>-->
+<!--    </virtualType>-->
+
+    <virtualType name="Magesoft\Otp\Model\Method\MainLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">Magesoft\Otp\Model\Method\DebugLogger</item>
+<!--                <item name="exception" xsi:type="object">Magesoft\Otp\Model\Method\ExceptionLogger</item>-->
+<!--                <item name="error" xsi:type="object">Magesoft\Otp\Model\Method\ErrorLogger</item>-->
+
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Framework\DB\Logger\LoggerProxy">
+        <arguments>
+            <argument name="loggerAlias" xsi:type="const">Magento\Framework\DB\Logger\LoggerProxy::LOGGER_ALIAS_FILE</argument>
+            <argument name="logAllQueries" xsi:type="init_parameter">Magento\Framework\Config\ConfigOptionsListConstants::CONFIG_PATH_DB_LOGGER_LOG_EVERYTHING</argument>
+            <argument name="logQueryTime" xsi:type="init_parameter">Magento\Framework\Config\ConfigOptionsListConstants::CONFIG_PATH_DB_LOGGER_QUERY_TIME_THRESHOLD</argument>
+            <argument name="logCallStack" xsi:type="boolean">false</argument>
+        </arguments>
+    </type>
+
+    <type name="Magesoft\Otp\Model\Method\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magesoft\Otp\Model\Method\MainLogger</argument>
+        </arguments>
+    </type>
+
+</config>

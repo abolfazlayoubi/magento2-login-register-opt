@@ -1,0 +1,17 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
+    <default>
+        <rds_core_base_settings>
+            <redis_storage>
+                <server>localhost:6379</server>
+                <db>10</db>
+            </redis_storage>
+
+        </rds_core_base_settings>
+        <otp_base_settings>
+            <auth_setting>
+                <expire_auth>1</expire_auth>
+            </auth_setting>
+        </otp_base_settings>
+    </default>
+
+</config>
