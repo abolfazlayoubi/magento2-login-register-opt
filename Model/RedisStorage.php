@@ -59,7 +59,7 @@ class RedisStorage
     public function setData(string $key, RedisStorageDataStorage $dataStorage)
     {
         $redis = $this->getRedisClient();
-        $redis->setex($key . "_" . $dataStorage->getName(), $dataStorage->getLifeTime(), json_encode($dataStorage->getData()));
+        $redis->setex($key, $dataStorage->getLifeTime(), json_encode($dataStorage->getData()));
     }
 
     /**

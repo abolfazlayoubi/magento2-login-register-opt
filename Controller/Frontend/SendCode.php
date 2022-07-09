@@ -16,7 +16,7 @@ class SendCode extends AbstractClass implements ActionInterface
         try {
             $params=$this->context->getRequest()
                 ->getParams();
-            if ($this->otpManager->checkRequestBefore($this->visitor->getId(),$params['mobile'])){
+            if (!$this->otpManager->checkRequestBefore($this->visitor->getId(),$params['mobile'])){
                 $idRow=$this->otpManager->generateCodeAndSend(
                     intval($this->visitor->getId()),
                     $params['mobile']);

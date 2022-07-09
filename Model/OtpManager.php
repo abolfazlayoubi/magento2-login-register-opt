@@ -163,14 +163,14 @@ class OtpManager
      */
     public function checkRequestBefore(int $visitorId,int $mobile): bool
     {
-        return is_array($this->redisStorage->redisKeyWalk("visitorId_".$visitorId));
+        return boolval(count($this->redisStorage->redisKeyWalk("visitorId_".$visitorId)));
     }
 
     /**
      * @return int
      */
     public function getAuthExpireTime(): int{
-        return intval($this->scopeConfig->getValue('otp_base_settings/auth_setting/expire_auth'));
+        return intval($this->scopeConfig->getValue('otp_base_settings/auth_setting/expire_auth'))*60;
     }
 
 
@@ -272,22 +272,28 @@ class OtpManager
            $item=$this->mageSoftOptStatus
                ->getCollection()
                ->addFieldToFilter('entity_id',$id)
+               ->addFieldToFilter('delivery_status',self::OTP_PENDING_STATUS)
                ->addFieldToFilter('visitor_id',$visitorId);
            if ($item->getSize()){
                $customer=clone $this->customerCollection;
                $customer->addFieldToFilter('mobile',$item->getFirstItem()->getMobileNumber());
                if($customer->getSize()){
-                   return $customer->getId();
+                   return intval($customer->getFirstItem()->getId());
                }else{
                     $obj=clone $this->customerInterface;
-                    $obj->setEmail($item->getFirstItem()->getMobileNumber()."@otp.com");
+                    $obj
+                        ->setEmail($item->getFirstItem()->getMobileNumber()."@otp.com")
+                        ->setFirstname("1")
+                        ->setLastname("2")
+                        ->setCustomAttribute("mobile",$item->getFirstItem()->getMobileNumber())
+                    ;
                     $newCustomer=$this->customerRepInterface
                         ->save($obj);
 
-                    return $newCustomer->getId();
+                    return intval($newCustomer->getId());
                }
            }else{
-               throw new \Exception(__("Request is not valid"));
+               throw new \Exception("Request is not valid");
            }
        }catch (\Exception $e){
            throw new \Exception("Login By Id:".$e->getMessage());
