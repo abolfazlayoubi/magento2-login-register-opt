@@ -10,13 +10,14 @@ define([
     'use strict';
 
     return function (params) {
-
         const username=$(params.usernameInputSelector);
         const otpBtn=$(params.btnOtpSelector);
         const signInBtn=$(params.signInSelector);
         const password=$(params.passwordInputSelector);
         const boxLogin=$(params.boxLoginSelector);
         const boxAuth=$(params.boxAuthSelector);
+        const btnSingAuth=$(params.btnSingAuth);
+        const authCodeInput=$(params.authCodeInput);
         let regmob = new RegExp('^([0|\\+[0-9]{1,5})?([7-9][0-9]{9})$');
         let regEmail=new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
         const showSignInBtn = () =>{
@@ -25,8 +26,13 @@ define([
         const hasCookie = () => {
             return Boolean (document.cookie.indexOf('loginOtp=')>=0)
         }
-        const getCookieExpireDate = () => {
-            let name = "loginOtp=";
+
+        const setId=(code)=>{
+            const currentDate = new Date();
+            document.cookie = "loginOtpId="+code+"; expires="+new Date(currentDate.getTime() + params.expireTime*60000)+"; path=/;";
+        }
+        const getCookieExpireDate = (name) => {
+            name += "=";
             let decodedCookie = decodeURIComponent(document.cookie);
             let ca = decodedCookie.split(';');
             for(let i = 0; i <ca.length; i++) {
@@ -40,6 +46,11 @@ define([
             }
             return "";
         }
+
+        const getId=()=>{
+            return getCookieExpireDate('loginOtpId')
+        }
+
         const setCookie = () => {
             if (!hasCookie()){
                 const currentDate = new Date();
@@ -65,18 +76,44 @@ define([
                         mobile:username.val()
                     },
                 }).success((response)=>{
-                    setCookie()
-                    boxLogin.css("display","none")
-                    boxAuth.css("display","block")
-                    const currentDate = new Date(getCookieExpireDate());
-                    alert(currentDate.getHours())
+                    setCookie();
+                    boxLogin.css("display","none");
+                    boxAuth.css("display","block");
+                    const currentDate = new Date(getCookieExpireDate("loginOtp"));
+                    setId(response.id)
                 }).error((response)=>{
                    alert(response.responseJSON.messages)
                 })
                 ;
                 return false;
-            })
+            });
+
+
         }
+        btnSingAuth.on("click",()=>{
+            if (parseInt(getId())){
+                $.ajax({
+                    url: params.ajaxUrlCheck,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        code:parseInt(getId()),
+                        mobile:username.val()
+                    },
+                }).success((response)=>{
+                    setId(data.id)
+                }).error((response)=>{
+                    alert(response.responseJSON.messages)
+                })
+                ;
+            }else{
+                alert("code has expire try again");
+                boxLogin.css("display","block");
+                boxAuth.css("display","none");
+            }
+
+            return false;
+        })
 
     };
 });

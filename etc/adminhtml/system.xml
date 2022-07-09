@@ -32,7 +32,12 @@
                     <label>Expire Time</label>
                     <comment>Expire Auth Code Time Per Minute</comment>
                 </field>
+                <field id="send_message" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Active SMS</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
+
 
         </section>
     </system>

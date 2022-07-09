@@ -31,5 +31,13 @@ class Login extends MainLoginClass
 
     }
 
+    /**
+     * @return string
+     */
+    public function getCheckCodeUrl(): string
+    {
+        return $this->getUrl('magesoftotp/frontend/CheckCode');
+
+    }
 
 }

@@ -11,6 +11,7 @@
             <auth_setting>
                 <expire_auth>1</expire_auth>
             </auth_setting>
+            <send_message>1</send_message>
         </otp_base_settings>
     </default>
 

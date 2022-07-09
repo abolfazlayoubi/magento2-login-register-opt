@@ -103,7 +103,10 @@
                     "boxLoginSelector":"#boxLogin",
                     "boxAuthSelector":"#boxAuth",
                     "expireTime":2,
-                    "ajaxUrl":"<?= $block->getSendCodeUrl()?>"
+                    "ajaxUrl":"<?= $block->getSendCodeUrl()?>",
+                    "ajaxUrlCheck":"<?= $block->getCheckCodeUrl()?>",
+                    "btnSingAuth":"#send3",
+                    "authCodeInput":"#authCode"
                 }
             }
         }

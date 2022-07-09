@@ -8,7 +8,8 @@ use Magesoft\Otp\Model\RedisStorage;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface as DateTime;
 use Magesoft\Otp\Model\Queue\QueueManagement;
-
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 class OtpManager
 {
 
@@ -35,32 +36,43 @@ class OtpManager
     /**
      * @var CustomerCollection
      */
-    protected $customerCollection;
+    protected CustomerCollection $customerCollection;
 
     /**
      * @var MageSoftOptStatus
      */
-    protected $mageSoftOptStatus;
+    protected MageSoftOptStatus $mageSoftOptStatus;
 
     /**
      * @var RedisStorage
      */
-    protected $redisStorage;
+    protected RedisStorage $redisStorage;
 
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
     /**
      * @var DateTime
      */
-    protected $dateTime;
+    protected DateTime $dateTime;
 
     /**
      * @var QueueManagement
      */
-    protected $queueManagement;
+    protected QueueManagement $queueManagement;
+
+
+    /**
+     * @var CustomerInterface
+     */
+    protected CustomerInterface $customerInterface;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    protected CustomerRepositoryInterface $customerRepInterface;
 
     /**
      * @param CustomerCollection $customerCollection
@@ -69,6 +81,8 @@ class OtpManager
      * @param ScopeConfigInterface $scopeConfig
      * @param DateTime $dateTime
      * @param QueueManagement $queueManagement
+     * @param CustomerInterface $customerInterface
+     * @param CustomerRepositoryInterface $customerRepInterface
      */
     public function __construct(
         CustomerCollection $customerCollection,
@@ -76,7 +90,9 @@ class OtpManager
         RedisStorage $redisStorage,
         ScopeConfigInterface $scopeConfig,
         DateTime $dateTime,
-        QueueManagement $queueManagement
+        QueueManagement $queueManagement,
+        CustomerInterface $customerInterface,
+        CustomerRepositoryInterface $customerRepInterface
     )
     {
         $this->customerCollection=$customerCollection;
@@ -85,6 +101,8 @@ class OtpManager
         $this->scopeConfig=$scopeConfig;
         $this->dateTime=$dateTime;
         $this->queueManagement=$queueManagement;
+        $this->customerInterface=$customerInterface;
+        $this->customerRepInterface=$customerRepInterface;
     }
 
 
@@ -240,5 +258,39 @@ class OtpManager
         return $this->mageSoftOptStatus
             ->getCollection()
             ->addFieldToFilter('delivery_status',self::OTP_Failed_STATUS);
+    }
+
+
+    /**
+     * @param int $id
+     * @param int $visitorId
+     * @return int
+     * @throws \Exception
+     */
+    public function getCustomerIdByItemId(int $id, int $visitorId):int{
+       try{
+           $item=$this->mageSoftOptStatus
+               ->getCollection()
+               ->addFieldToFilter('entity_id',$id)
+               ->addFieldToFilter('visitor_id',$visitorId);
+           if ($item->getSize()){
+               $customer=clone $this->customerCollection;
+               $customer->addFieldToFilter('mobile',$item->getFirstItem()->getMobileNumber());
+               if($customer->getSize()){
+                   return $customer->getId();
+               }else{
+                    $obj=clone $this->customerInterface;
+                    $obj->setEmail($item->getFirstItem()->getMobileNumber()."@otp.com");
+                    $newCustomer=$this->customerRepInterface
+                        ->save($obj);
+
+                    return $newCustomer->getId();
+               }
+           }else{
+               throw new \Exception(__("Request is not valid"));
+           }
+       }catch (\Exception $e){
+           throw new \Exception("Login By Id:".$e->getMessage());
+       }
     }
 }

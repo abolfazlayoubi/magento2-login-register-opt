@@ -156,7 +156,7 @@ class SmsConsumer implements ConsumerInterface
     public function mapMessage(string $data):bool
     {
         try{
-            $data=json_decode($this->json->unserialize($data));
+            $data=$this->json->unserialize($data);
             $this->otpManager->sendSms($data['id'],$data['mobile'],$data['auth_code']);
             return true;
         }catch (\Exception $e){

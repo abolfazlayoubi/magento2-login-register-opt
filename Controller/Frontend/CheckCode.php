@@ -1,15 +1,17 @@
 <?php
 
-namespace Magesoft\Otp\Controller\Frontend;
 
+namespace Magesoft\Otp\Controller\Frontend;
 use Magento\Framework\App\ActionInterface;
 
-class SendCode extends AbstractClass implements ActionInterface
+class CheckCode extends AbstractClass implements ActionInterface
 {
 
-
     /**
-     * @inheritDoc
+     * Execute action based on request and return result
+     *
+     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
+     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
@@ -17,14 +19,16 @@ class SendCode extends AbstractClass implements ActionInterface
             $params=$this->context->getRequest()
                 ->getParams();
             if ($this->otpManager->checkRequestBefore($this->visitor->getId(),$params['mobile'])){
-                $idRow=$this->otpManager->generateCodeAndSend(
-                    intval($this->visitor->getId()),
-                    $params['mobile']);
+
+                $id=$this->otpManager->getCustomerIdByItemId($params['code'],$this->visitor->getId());
+                if ($id){
+                    $this->session->loginById($id);
+                }
                 return $this->context->getResultFactory()->create(
                     $this->context->getResultFactory()::TYPE_JSON)
-                    ->setHttpResponseCode(201)
+                    ->setHttpResponseCode(200)
                     ->setData([
-                        'id'=>$idRow
+                        'message'=>__('login ok'),
                     ])
                     ;
             }else{
@@ -32,7 +36,7 @@ class SendCode extends AbstractClass implements ActionInterface
                     $this->context->getResultFactory()::TYPE_JSON)
                     ->setHttpResponseCode(400)
                     ->setData([
-                        'message'=>__('send request before'),
+                        'message'=>__('Code doest not fount try again'),
                     ])
                     ;
             }
